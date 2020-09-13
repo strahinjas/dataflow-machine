@@ -47,7 +47,10 @@
     <ClInclude Include="parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="expression.h">
+    <ClInclude Include="configuration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="program.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

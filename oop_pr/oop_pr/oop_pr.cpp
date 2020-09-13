@@ -1,4 +1,5 @@
 #include "compiler.h"
+#include "parser.h"
 
 #include <exception>
 #include <iostream>
@@ -22,10 +23,10 @@ int main(int argc, const char* argv[])
 
 	try
 	{
-		Compiler compiler;
+		Parser& parser = Parser::getInstance();
 
-		compiler.readConfiguration(configurationFileName);
-		compiler.readProgram(programFileName);
+		parser.readConfiguration(configurationFileName);
+		parser.readProgram(programFileName);
 	}
 	catch (const std::exception& e)
 	{

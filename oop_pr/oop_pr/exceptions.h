@@ -4,10 +4,10 @@
 #include <exception>
 #include <string>
 
-class CompilingException : public std::exception
+class ParsingException : public std::exception
 {
 public:
-	CompilingException(const std::string& message) : message(message) {}
+	ParsingException(const std::string& message) : message(message) {}
 
 	const char* what() const noexcept override
 	{
