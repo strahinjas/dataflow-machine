@@ -1,7 +1,12 @@
 #ifndef _PROGRAM_H_
 #define _PROGRAM_H_
 
+#include "expression.h"
+
+#include <memory>
 #include <string>
+#include <vector>
+#include <utility>
 
 class Program
 {
@@ -20,10 +25,16 @@ public:
 	std::string imf() const { return name + ".imf"; }
 	std::string log() const { return name + ".log"; }
 	std::string mem() const { return name + ".mem"; }
+
+	void addAssignment(Expression::Pointer assignment)
+	{
+		assignments.push_back(std::move(assignment));
+	}
 private:
 	Program() = default;
 
 	std::string name;
+	std::vector<Expression::Pointer> assignments;
 };
 
 #endif

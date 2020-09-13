@@ -36,6 +36,9 @@ private:
 		removeSpaces(s);
 	}
 
+	static std::vector<std::string> split(const std::string& line, const char* operations = "=+*^");
+	static void parse(const std::vector<std::string>& tokens);
+
 	void readParameter(const std::string& line);
 
 	static const std::unordered_map<Configuration::Parameter, std::regex> parameterMatcher;

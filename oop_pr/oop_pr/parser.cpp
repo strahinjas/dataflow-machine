@@ -7,6 +7,7 @@
 
 #include <fstream>
 #include <memory>
+#include <stack>
 
 const std::unordered_map<Configuration::Parameter, std::regex> Parser::parameterMatcher =
 {
@@ -17,6 +18,79 @@ const std::unordered_map<Configuration::Parameter, std::regex> Parser::parameter
 	{ Configuration::Parameter::Nw, std::regex("^Nw = (.+)$") },
 	{ Configuration::Parameter::C,  std::regex("^compilation = (simple|advanced)$") }
 };
+
+std::vector<std::string> Parser::split(const std::string& line, const char* operations)
+{
+	std::vector<std::string> tokens;
+	std::size_t begin = line.find_first_not_of(operations);
+
+	while (begin != std::string::npos)
+	{
+		std::size_t end = line.find_first_of(operations, begin);
+
+		tokens.push_back(line.substr(begin, end - begin));
+		if (end != std::string::npos) tokens.push_back({ line[end] });
+
+		begin = line.find_first_not_of(operations, end);
+	}
+
+	return tokens;
+}
+
+void Parser::parse(const std::vector<std::string>& tokens)
+{
+	const std::string operations = "=+*^";
+
+	const std::regex variable("^[a-zA-Z]$");
+	const std::regex constant("^(0|([1-9][0-9]*))(\\.[0-9]+)?$");
+
+	std::stack<std::size_t> stack;
+	std::stack<Expression::Pointer> nodes;
+
+	auto leftToRight = [](const std::string& s) { return s != "=" && s != "^"; };
+
+	for (const auto& token : tokens)
+	{
+		std::size_t index = operations.find(token);
+
+		if (index == std::string::npos)
+		{
+			if (!std::regex_match(token, variable) && !std::regex_match(token, constant))
+			{
+				throw ParsingException("Invalid token '" + token + "'.");
+			}
+
+			nodes.push(std::make_unique<Expression>(Expression(token)));
+		}
+		else
+		{
+			while (!stack.empty() && (index < stack.top() || (index == stack.top() && leftToRight(token))))
+			{
+				Expression::Pointer right = std::move(nodes.top()); nodes.pop();
+				Expression::Pointer left  = std::move(nodes.top()); nodes.pop();
+
+				nodes.push(std::make_unique<Expression>(Expression({ operations[stack.top()] }, std::move(left), std::move(right))));
+
+				stack.pop();
+			}
+
+			stack.push(index);
+		}
+	}
+
+	while (!stack.empty())
+	{
+		Expression::Pointer right = std::move(nodes.top()); nodes.pop();
+		Expression::Pointer left  = std::move(nodes.top()); nodes.pop();
+
+		nodes.push(std::make_unique<Expression>(Expression({ operations[stack.top()] }, std::move(left), std::move(right))));
+
+		stack.pop();
+	}
+
+	Program::getInstance().addAssignment(std::move(nodes.top()));
+	nodes.pop();
+}
 
 void Parser::readParameter(const std::string& line)
 {
@@ -92,6 +166,7 @@ void Parser::readProgram(const std::string& fileName)
 	while (std::getline(file, line))
 	{
 		cleanUp(line);
+		parse(split(line));
 	}
 
 	file.close();

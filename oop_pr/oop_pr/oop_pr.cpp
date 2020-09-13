@@ -30,7 +30,7 @@ int main(int argc, const char* argv[])
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << e.what() << "\n\n";
+		std::cerr << "ERROR: " << e.what() << "\n\n";
 		return 1;
 	}
 
