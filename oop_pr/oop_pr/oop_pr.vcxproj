@@ -146,12 +146,15 @@
     <ClCompile Include="compilation_strategy.cpp" />
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="oop_pr.cpp" />
+    <ClCompile Include="parser.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="compilation_strategy.h" />
     <ClInclude Include="compiler.h" />
     <ClInclude Include="exceptions.h" />
+    <ClInclude Include="expression.h" />
     <ClInclude Include="memory.h" />
+    <ClInclude Include="parser.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

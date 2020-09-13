@@ -3,14 +3,14 @@
 
 #include <fstream>
 
-std::unordered_map<Compiler::Parameter, std::regex> Compiler::parameterMatcher =
+const std::unordered_map<Compiler::Parameter, std::regex> Compiler::parameterMatcher =
 {
-	{ Compiler::Ta, std::regex("^Ta = (.+)$") },
-	{ Compiler::Tm, std::regex("^Tm = (.+)$") },
-	{ Compiler::Te, std::regex("^Te = (.+)$") },
-	{ Compiler::Tw, std::regex("^Tw = (.+)$") },
-	{ Compiler::Nw, std::regex("^Nw = (.+)$") },
-	{ Compiler::C,  std::regex("^compilation = (simple|advanced)$") }
+	{ Compiler::Parameter::Ta, std::regex("^Ta = (.+)$") },
+	{ Compiler::Parameter::Tm, std::regex("^Tm = (.+)$") },
+	{ Compiler::Parameter::Te, std::regex("^Te = (.+)$") },
+	{ Compiler::Parameter::Tw, std::regex("^Tw = (.+)$") },
+	{ Compiler::Parameter::Nw, std::regex("^Nw = (.+)$") },
+	{ Compiler::Parameter::C,  std::regex("^compilation = (simple|advanced)$") }
 };
 
 void Compiler::readParameter(const std::string& line)
@@ -23,7 +23,7 @@ void Compiler::readParameter(const std::string& line)
 
 		if (std::regex_match(line, match, entry.second))
 		{
-			if (entry.first == C)
+			if (entry.first == Parameter::C)
 			{
 				if (match[1] == simpleStrategy)
 					strategy = std::unique_ptr<CompilationStrategy>(new SimpleCompilationStrategy());
@@ -35,7 +35,7 @@ void Compiler::readParameter(const std::string& line)
 				try
 				{
 					double value = std::stod(match[1]);
-					parameters[entry.first] = value;
+					parameters[static_cast<std::size_t>(entry.first)] = value;
 				}
 				catch (const std::exception&)
 				{
@@ -67,8 +67,19 @@ void Compiler::readConfiguration(const std::string& fileName)
 		cleanUp(line);
 		readParameter(line);
 	}
+
+	file.close();
 }
 
 void Compiler::readProgram(const std::string& fileName)
 {
+	std::ifstream file(fileName);
+	programName = fileName.substr(0, fileName.find_last_of('.'));
+
+	if (!file.is_open())
+	{
+		throw CompilingException("Failed to open program file '" + fileName + "'.");
+	}
+
+	file.close();
 }
