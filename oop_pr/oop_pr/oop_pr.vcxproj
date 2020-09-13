@@ -94,7 +94,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\Strahinja\Desktop\OOP\oop_pr\oop_pr\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SimulatorEngine.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -142,10 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="compiler.cpp" />
+    <ClCompile Include="compilation_strategy.cpp" />
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="oop_pr.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="compilation_strategy.h" />
+    <ClInclude Include="compiler.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="memory.h" />
   </ItemGroup>
