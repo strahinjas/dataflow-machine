@@ -27,6 +27,8 @@ int main(int argc, const char* argv[])
 
 		parser.readConfiguration(configurationFileName);
 		parser.readProgram(programFileName);
+
+		Compiler::getInstance().compile();
 	}
 	catch (const std::exception& e)
 	{

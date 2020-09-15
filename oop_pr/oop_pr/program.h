@@ -1,6 +1,7 @@
 #ifndef _PROGRAM_H_
 #define _PROGRAM_H_
 
+#include "compilation_strategy.h"
 #include "expression.h"
 
 #include <memory>
@@ -28,13 +29,16 @@ public:
 
 	void addAssignment(Expression::Pointer assignment)
 	{
-		assignments.push_back(std::move(assignment));
+		expressions.push_back(assignment);
 	}
 private:
 	Program() = default;
 
+	friend class SimpleCompilationStrategy;
+	friend class AdvancedCompilationStrategy;
+
 	std::string name;
-	std::vector<Expression::Pointer> assignments;
+	std::vector<Expression::Pointer> expressions;
 };
 
 #endif

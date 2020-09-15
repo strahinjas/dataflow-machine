@@ -17,10 +17,12 @@ public:
 		return instance;
 	}
 
-	void setStrategy(std::unique_ptr<CompilationStrategy>&& strategy)
+	void setStrategy(std::unique_ptr<CompilationStrategy> strategy)
 	{
 		this->strategy = std::move(strategy);
 	}
+
+	void compile() const { strategy->execute(); }
 private:
 	Compiler() = default;
 

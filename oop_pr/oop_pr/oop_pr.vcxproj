@@ -142,8 +142,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="compiler.cpp" />
     <ClCompile Include="compilation_strategy.cpp" />
+    <ClCompile Include="expression.cpp" />
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="oop_pr.cpp" />
     <ClCompile Include="parser.cpp" />

@@ -42,7 +42,7 @@ void Parser::parse(const std::vector<std::string>& tokens)
 	const std::string operations = "=+*^";
 
 	const std::regex variable("^[a-zA-Z]$");
-	const std::regex constant("^(0|([1-9][0-9]*))(\\.[0-9]+)?$");
+	const std::regex constant("^-?(0|([1-9][0-9]*))(\\.[0-9]+)?$");
 
 	std::stack<std::size_t> stack;
 	std::stack<Expression::Pointer> nodes;
@@ -55,21 +55,29 @@ void Parser::parse(const std::vector<std::string>& tokens)
 
 		if (index == std::string::npos)
 		{
-			if (!std::regex_match(token, variable) && !std::regex_match(token, constant))
+			if (std::regex_match(token, variable))
+			{
+				nodes.push(std::make_shared<Variable>(token[0]));
+			}
+			else if (std::regex_match(token, constant))
+			{
+				nodes.push(std::make_shared<Constant>(std::stod(token)));
+			}
+			else
 			{
 				throw ParsingException("Invalid token '" + token + "'.");
 			}
-
-			nodes.push(std::make_unique<Expression>(Expression(token)));
 		}
 		else
 		{
 			while (!stack.empty() && (index < stack.top() || (index == stack.top() && leftToRight(token))))
 			{
-				Expression::Pointer right = std::move(nodes.top()); nodes.pop();
-				Expression::Pointer left  = std::move(nodes.top()); nodes.pop();
+				Expression::Pointer right = nodes.top(); nodes.pop();
+				Expression::Pointer left  = nodes.top(); nodes.pop();
 
-				nodes.push(std::make_unique<Expression>(Expression({ operations[stack.top()] }, std::move(left), std::move(right))));
+				Expression::Operation operation(static_cast<Expression::Operation>(operations[stack.top()]));
+
+				nodes.push(std::make_shared<Expression>(operation, left, right));
 
 				stack.pop();
 			}
@@ -80,15 +88,17 @@ void Parser::parse(const std::vector<std::string>& tokens)
 
 	while (!stack.empty())
 	{
-		Expression::Pointer right = std::move(nodes.top()); nodes.pop();
-		Expression::Pointer left  = std::move(nodes.top()); nodes.pop();
+		Expression::Pointer right = nodes.top(); nodes.pop();
+		Expression::Pointer left  = nodes.top(); nodes.pop();
 
-		nodes.push(std::make_unique<Expression>(Expression({ operations[stack.top()] }, std::move(left), std::move(right))));
+		Expression::Operation operation(static_cast<Expression::Operation>(operations[stack.top()]));
+
+		nodes.push(std::make_shared<Expression>(operation, left, right));
 
 		stack.pop();
 	}
 
-	Program::getInstance().addAssignment(std::move(nodes.top()));
+	Program::getInstance().addAssignment(nodes.top());
 	nodes.pop();
 }
 

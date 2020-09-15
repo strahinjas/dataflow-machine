@@ -17,6 +17,19 @@ private:
 	std::string message;
 };
 
+class CompilingException : public std::exception
+{
+public:
+	CompilingException(const std::string& message) : message(message) {}
+
+	const char* what() const noexcept override
+	{
+		return message.c_str();
+	}
+private:
+	std::string message;
+};
+
 class VariableNotAvailableException : public std::exception
 {
 public:
