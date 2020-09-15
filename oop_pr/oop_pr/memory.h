@@ -1,8 +1,6 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
-#include "exceptions.h"
-
 #include <map>
 #include <string>
 
@@ -20,6 +18,8 @@ public:
 
 	double get(const std::string& variableName) const;
 	bool   set(const std::string& variableName, double value);
+
+	void write(const std::string& fileName) const;
 private:
 	explicit Memory(int Nw) : Nw(Nw) {}
 

@@ -5,9 +5,17 @@
 
 #include <algorithm>
 #include <cctype>
+#include <iomanip>
 #include <regex>
-#include <string>
+#include <sstream>
 #include <unordered_map>
+
+inline std::string doubleToString(double value)
+{
+	std::stringstream ss;
+	ss << std::setprecision(0) << value;
+	return ss.str();
+}
 
 class Parser
 {

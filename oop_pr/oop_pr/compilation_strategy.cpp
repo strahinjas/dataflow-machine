@@ -1,6 +1,7 @@
 #include "compilation_strategy.h"
 
 #include "exceptions.h"
+#include "parser.h"
 #include "program.h"
 
 #include <stack>
@@ -78,7 +79,7 @@ void SimpleCompilationStrategy::execute() const
 
 	if (!file.is_open())
 	{
-		throw CompilingException("Failed to create intermediate form file '" + program.imf() + "'.");
+		throw GenericException("Failed to create intermediate form file '" + program.imf() + "'.");
 	}
 
 	for (const auto& expression : program.expressions)
@@ -91,4 +92,5 @@ void SimpleCompilationStrategy::execute() const
 
 void AdvancedCompilationStrategy::execute() const
 {
+	// TODO: Advanced Compilation Strategy
 }

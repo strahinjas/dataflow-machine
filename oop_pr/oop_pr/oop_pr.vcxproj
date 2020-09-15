@@ -154,9 +154,12 @@
     <ClInclude Include="configuration.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="expression.h" />
+    <ClInclude Include="machine.h" />
     <ClInclude Include="memory.h" />
+    <ClInclude Include="operation.h" />
     <ClInclude Include="parser.h" />
     <ClInclude Include="program.h" />
+    <ClInclude Include="token.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

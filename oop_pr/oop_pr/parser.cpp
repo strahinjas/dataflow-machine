@@ -65,7 +65,7 @@ void Parser::parse(const std::vector<std::string>& tokens)
 			}
 			else
 			{
-				throw ParsingException("Invalid token '" + token + "'.");
+				throw GenericException("Invalid token '" + token + "'.");
 			}
 		}
 		else
@@ -98,7 +98,7 @@ void Parser::parse(const std::vector<std::string>& tokens)
 		stack.pop();
 	}
 
-	Program::getInstance().addAssignment(nodes.top());
+	Program::getInstance().addExpression(nodes.top());
 	nodes.pop();
 }
 
@@ -128,7 +128,7 @@ void Parser::readParameter(const std::string& line)
 				}
 				catch (const std::exception&)
 				{
-					throw ParsingException("Invalid parameter value (double expected): " + line + ".");
+					throw GenericException("Invalid parameter value (double expected): " + line + ".");
 				}
 			}
 
@@ -136,7 +136,7 @@ void Parser::readParameter(const std::string& line)
 		}
 	}
 
-	throw ParsingException("Invalid configuration parameter: " + line + ".");
+	throw GenericException("Invalid configuration parameter: " + line + ".");
 }
 
 void Parser::readConfiguration(const std::string& fileName)
@@ -146,7 +146,7 @@ void Parser::readConfiguration(const std::string& fileName)
 
 	if (!file.is_open())
 	{
-		throw ParsingException("Failed to open configuration file '" + fileName + "'.");
+		throw GenericException("Failed to open configuration file '" + fileName + "'.");
 	}
 
 	std::string line;
@@ -168,7 +168,7 @@ void Parser::readProgram(const std::string& fileName)
 
 	if (!file.is_open())
 	{
-		throw ParsingException("Failed to open program file '" + fileName + "'.");
+		throw GenericException("Failed to open program file '" + fileName + "'.");
 	}
 
 	std::string line;

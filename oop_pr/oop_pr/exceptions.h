@@ -4,10 +4,10 @@
 #include <exception>
 #include <string>
 
-class ParsingException : public std::exception
+class GenericException : public std::exception
 {
 public:
-	ParsingException(const std::string& message) : message(message) {}
+	GenericException(const std::string& message) : message(message) {}
 
 	const char* what() const noexcept override
 	{
@@ -17,10 +17,11 @@ private:
 	std::string message;
 };
 
-class CompilingException : public std::exception
+class TokenDefinedException : public std::exception
 {
 public:
-	CompilingException(const std::string& message) : message(message) {}
+	TokenDefinedException(const std::string& name)
+		: message("Token '" + name + "' is already defined!") {}
 
 	const char* what() const noexcept override
 	{
