@@ -7,8 +7,8 @@
 #include <stack>
 #include <string>
 
-int CompilationStrategy::operationID = 0;
-int CompilationStrategy::temporaryCount = 0;
+unsigned int CompilationStrategy::operationID = 0;
+unsigned int CompilationStrategy::temporaryCount = 0;
 
 void SimpleCompilationStrategy::traversePostorder(std::ofstream& file, Node root) const
 {

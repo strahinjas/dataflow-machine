@@ -1,5 +1,6 @@
 #include "compiler.h"
-#include "parser.h"
+#include "program.h"
+#include "machine.h"
 
 #include <exception>
 #include <iostream>
@@ -18,17 +19,16 @@ int main(int argc, const char* argv[])
 		return 1;
 	}
 
-	std::string configurationFileName = argv[configurationIndex];
-	std::string programFileName = argv[programIndex];
+	std::string configuration = argv[configurationIndex];
+	std::string program = argv[programIndex];
 
 	try
 	{
-		Parser& parser = Parser::getInstance();
+		Compiler compiler;
+		compiler.compile(configuration, program);
 
-		parser.readConfiguration(configurationFileName);
-		parser.readProgram(programFileName);
-
-		Compiler::getInstance().compile();
+		Machine machine;
+		machine.execute(Program::getInstance().imf());
 	}
 	catch (const std::exception& e)
 	{

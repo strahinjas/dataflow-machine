@@ -19,30 +19,30 @@ const std::unordered_map<Configuration::Parameter, std::regex> Parser::parameter
 	{ Configuration::Parameter::C,  std::regex("^compilation = (simple|advanced)$") }
 };
 
-std::vector<std::string> Parser::split(const std::string& line, const char* operations)
+std::vector<std::string> Parser::split(const std::string& line, const char* delimiter, bool include)
 {
 	std::vector<std::string> tokens;
-	std::size_t begin = line.find_first_not_of(operations);
+	std::size_t begin = line.find_first_not_of(delimiter);
 
 	while (begin != std::string::npos)
 	{
-		std::size_t end = line.find_first_of(operations, begin);
+		std::size_t end = line.find_first_of(delimiter, begin);
 
 		tokens.push_back(line.substr(begin, end - begin));
-		if (end != std::string::npos) tokens.push_back({ line[end] });
+		if (include && end != std::string::npos) tokens.push_back({ line[end] });
 
-		begin = line.find_first_not_of(operations, end);
+		begin = line.find_first_not_of(delimiter, end);
 	}
 
 	return tokens;
 }
 
-void Parser::parse(const std::vector<std::string>& tokens)
+void Parser::buildSyntaxTree(const std::vector<std::string>& tokens)
 {
 	const std::string operations = "=+*^";
 
-	const std::regex variable("^[a-zA-Z]$");
-	const std::regex constant("^-?(0|([1-9][0-9]*))(\\.[0-9]+)?$");
+	const std::regex variable(R"(^[a-zA-Z]$)");
+	const std::regex constant(R"(^-?(0|([1-9][0-9]*))(\.[0-9]+)?$)");
 
 	std::stack<std::size_t> stack;
 	std::stack<Expression::Pointer> nodes;
@@ -102,6 +102,11 @@ void Parser::parse(const std::vector<std::string>& tokens)
 	nodes.pop();
 }
 
+void Parser::buildModel(const std::vector<std::string>& tokens)
+{
+
+}
+
 void Parser::readParameter(const std::string& line)
 {
 	const std::string simpleStrategy = "simple";
@@ -114,10 +119,7 @@ void Parser::readParameter(const std::string& line)
 		{
 			if (entry.first == Configuration::Parameter::C)
 			{
-				if (match[1] == simpleStrategy)
-					Compiler::getInstance().setStrategy(std::make_unique<SimpleCompilationStrategy>());
-				else
-					Compiler::getInstance().setStrategy(std::make_unique<AdvancedCompilationStrategy>());
+				Configuration::getInstance().setStrategy(match[1]);
 			}
 			else
 			{
@@ -175,8 +177,27 @@ void Parser::readProgram(const std::string& fileName)
 
 	while (std::getline(file, line))
 	{
-		cleanUp(line);
-		parse(split(line));
+		removeSpaces(line);
+		buildSyntaxTree(split(line, "=+*^", true));
+	}
+
+	file.close();
+}
+
+void Parser::readIMF(const std::string& fileName)
+{
+	std::ifstream file(fileName);
+
+	if (!file.is_open())
+	{
+		throw GenericException("Failed to open intermediate form file '" + fileName + "'.");
+	}
+
+	std::string line;
+
+	while (std::getline(file, line))
+	{
+		buildModel(split(line, "[ ]", false));
 	}
 
 	file.close();

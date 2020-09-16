@@ -20,34 +20,20 @@ inline std::string doubleToString(double value)
 class Parser
 {
 public:
-	Parser(const Parser&) = delete;
-	Parser& operator=(const Parser&) = delete;
-
-	static Parser& getInstance()
-	{
-		static Parser instance;
-		return instance;
-	}
-
-	void readConfiguration(const std::string& fileName);
-	void readProgram(const std::string& fileName);
+	static void readConfiguration(const std::string& fileName);
+	static void readProgram(const std::string& fileName);
+	static void readIMF(const std::string& fileName);
 private:
-	Parser() = default;
-
 	static void trim(std::string& s);
 	static void removeSpaces(std::string& s);
 	static void removeExtraSpaces(std::string& s);
 
-	static void cleanUp(std::string& s)
-	{
-		trim(s);
-		removeSpaces(s);
-	}
+	static std::vector<std::string> split(const std::string& line, const char* delimiter, bool include);
 
-	static std::vector<std::string> split(const std::string& line, const char* operations = "=+*^");
-	static void parse(const std::vector<std::string>& tokens);
+	static void buildSyntaxTree(const std::vector<std::string>& tokens);
+	static void buildModel(const std::vector<std::string>& tokens);
 
-	void readParameter(const std::string& line);
+	static void readParameter(const std::string& line);
 
 	static const std::unordered_map<Configuration::Parameter, std::regex> parameterMatcher;
 };

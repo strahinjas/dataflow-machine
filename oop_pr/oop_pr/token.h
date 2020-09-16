@@ -4,21 +4,14 @@
 #include "exceptions.h"
 
 #include <string>
-#include <unordered_set>
+#include <unordered_map>
 
 class Token
 {
 public:
-	Token(const std::string& name, double value, int operationID)
-		: name(name), value(value), operationID(operationID)
-	{
-		if (tokens.insert(name).second == false)
-		{
-			throw TokenDefinedException(name);
-		}
-	}
+	Token(const std::string& name, double value, int operationID);
 private:
-	static std::unordered_set<std::string> tokens;
+	static std::unordered_map<std::string, Token> tokens;
 
 	std::string name;
 	double value;

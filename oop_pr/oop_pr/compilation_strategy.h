@@ -12,8 +12,8 @@ public:
 protected:
 	using Node = Expression::Pointer;
 
-	static int operationID;
-	static int temporaryCount;
+	static unsigned int operationID;
+	static unsigned int temporaryCount;
 };
 
 class SimpleCompilationStrategy : public CompilationStrategy
