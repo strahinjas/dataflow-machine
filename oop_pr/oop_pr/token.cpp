@@ -1,11 +1,11 @@
 #include "token.h"
 
-std::unordered_map<std::string, Token> Token::tokens;
+std::unordered_map<std::string, TokenPointer> Token::tokens;
 
-Token::Token(const std::string& name, double value, int operationID)
-	: name(name), value(value), operationID(operationID)
+Token::Token(const std::string& name, unsigned int operationID)
+	: name(name), value(0.0), operationID(operationID), ready(false)
 {
-	if (tokens.insert({ name, *this }).second == false)
+	if (tokens.insert({ name, TokenPointer(this) }).second == false)
 	{
 		throw TokenDefinedException(name);
 	}

@@ -37,7 +37,7 @@ std::vector<std::string> Parser::split(const std::string& line, const char* deli
 	return tokens;
 }
 
-void Parser::buildSyntaxTree(const std::vector<std::string>& tokens)
+void Parser::buildExpressionTree(const std::vector<std::string>& tokens)
 {
 	const std::string operations = "=+*^";
 
@@ -45,7 +45,7 @@ void Parser::buildSyntaxTree(const std::vector<std::string>& tokens)
 	const std::regex constant(R"(^-?(0|([1-9][0-9]*))(\.[0-9]+)?$)");
 
 	std::stack<std::size_t> stack;
-	std::stack<Expression::Pointer> nodes;
+	std::stack<Expression::TokenPointer> nodes;
 
 	auto leftToRight = [](const std::string& s) { return s != "=" && s != "^"; };
 
@@ -72,8 +72,8 @@ void Parser::buildSyntaxTree(const std::vector<std::string>& tokens)
 		{
 			while (!stack.empty() && (index < stack.top() || (index == stack.top() && leftToRight(token))))
 			{
-				Expression::Pointer right = nodes.top(); nodes.pop();
-				Expression::Pointer left  = nodes.top(); nodes.pop();
+				Expression::TokenPointer right = nodes.top(); nodes.pop();
+				Expression::TokenPointer left  = nodes.top(); nodes.pop();
 
 				Expression::Operation operation(static_cast<Expression::Operation>(operations[stack.top()]));
 
@@ -88,8 +88,8 @@ void Parser::buildSyntaxTree(const std::vector<std::string>& tokens)
 
 	while (!stack.empty())
 	{
-		Expression::Pointer right = nodes.top(); nodes.pop();
-		Expression::Pointer left  = nodes.top(); nodes.pop();
+		Expression::TokenPointer right = nodes.top(); nodes.pop();
+		Expression::TokenPointer left  = nodes.top(); nodes.pop();
 
 		Expression::Operation operation(static_cast<Expression::Operation>(operations[stack.top()]));
 
@@ -102,7 +102,7 @@ void Parser::buildSyntaxTree(const std::vector<std::string>& tokens)
 	nodes.pop();
 }
 
-void Parser::buildModel(const std::vector<std::string>& tokens)
+void Parser::buildFlowGraph(const std::vector<std::string>& tokens)
 {
 
 }
@@ -178,7 +178,7 @@ void Parser::readProgram(const std::string& fileName)
 	while (std::getline(file, line))
 	{
 		removeSpaces(line);
-		buildSyntaxTree(split(line, "=+*^", true));
+		buildExpressionTree(split(line, "=+*^", true));
 	}
 
 	file.close();
@@ -197,7 +197,7 @@ void Parser::readIMF(const std::string& fileName)
 
 	while (std::getline(file, line))
 	{
-		buildModel(split(line, "[ ]", false));
+		buildFlowGraph(split(line, "[ ]", false));
 	}
 
 	file.close();

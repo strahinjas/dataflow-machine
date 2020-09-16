@@ -147,6 +147,7 @@
     <ClCompile Include="memory.cpp" />
     <ClCompile Include="machine.cpp" />
     <ClCompile Include="oop_pr.cpp" />
+    <ClCompile Include="operation.cpp" />
     <ClCompile Include="parser.cpp" />
     <ClCompile Include="token.cpp" />
   </ItemGroup>
@@ -156,6 +157,7 @@
     <ClInclude Include="configuration.h" />
     <ClInclude Include="exceptions.h" />
     <ClInclude Include="expression.h" />
+    <ClInclude Include="logger.h" />
     <ClInclude Include="machine.h" />
     <ClInclude Include="memory.h" />
     <ClInclude Include="operation.h" />

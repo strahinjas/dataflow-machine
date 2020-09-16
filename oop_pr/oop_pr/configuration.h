@@ -10,9 +10,6 @@ constexpr int parameterCount = 5;
 class Configuration
 {
 public:
-	Configuration(const Configuration&) = delete;
-	Configuration& operator=(const Configuration&) = delete;
-
 	enum class Parameter { Ta, Tm, Te, Tw, Nw, C };
 
 	static Configuration& getInstance()
@@ -48,6 +45,9 @@ public:
 	}
 private:
 	Configuration() = default;
+
+	Configuration(const Configuration&) = delete;
+	Configuration& operator=(const Configuration&) = delete;
 
 	std::vector<double> parameters;
 	std::string compilationStrategy;

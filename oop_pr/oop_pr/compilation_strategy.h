@@ -10,7 +10,7 @@ class CompilationStrategy
 public:
 	virtual void execute() const = 0;
 protected:
-	using Node = Expression::Pointer;
+	using Node = Expression::TokenPointer;
 
 	static unsigned int operationID;
 	static unsigned int temporaryCount;

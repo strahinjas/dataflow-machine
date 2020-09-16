@@ -30,8 +30,8 @@ private:
 
 	static std::vector<std::string> split(const std::string& line, const char* delimiter, bool include);
 
-	static void buildSyntaxTree(const std::vector<std::string>& tokens);
-	static void buildModel(const std::vector<std::string>& tokens);
+	static void buildExpressionTree(const std::vector<std::string>& tokens);
+	static void buildFlowGraph(const std::vector<std::string>& tokens);
 
 	static void readParameter(const std::string& line);
 

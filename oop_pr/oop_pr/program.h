@@ -1,20 +1,14 @@
 #ifndef _PROGRAM_H_
 #define _PROGRAM_H_
 
-#include "compilation_strategy.h"
 #include "expression.h"
 
-#include <memory>
 #include <string>
 #include <vector>
-#include <utility>
 
 class Program
 {
 public:
-	Program(const Program&) = delete;
-	Program& operator=(const Program&) = delete;
-
 	static Program& getInstance()
 	{
 		static Program instance;
@@ -27,18 +21,21 @@ public:
 	std::string log() const { return name + ".log"; }
 	std::string mem() const { return name + ".mem"; }
 
-	void addExpression(Expression::Pointer expression)
+	void addExpression(Expression::TokenPointer expression)
 	{
 		expressions.push_back(expression);
 	}
 private:
 	Program() = default;
 
+	Program(const Program&) = delete;
+	Program& operator=(const Program&) = delete;
+
 	friend class SimpleCompilationStrategy;
 	friend class AdvancedCompilationStrategy;
 
 	std::string name;
-	std::vector<Expression::Pointer> expressions;
+	std::vector<Expression::TokenPointer> expressions;
 };
 
 #endif

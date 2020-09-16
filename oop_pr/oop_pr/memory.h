@@ -19,12 +19,14 @@ public:
 	double get(const std::string& variableName) const;
 	bool   set(const std::string& variableName, double value);
 
+	bool ready() const { return writeCount < Nw; }
+
 	void write(const std::string& fileName) const;
 private:
-	explicit Memory(int Nw) : Nw(Nw) {}
+	explicit Memory(int Nw) : Nw(Nw), writeCount(0) {}
 
 	int Nw;
-//	int writeCount = 0;
+	int writeCount;
 	std::map<std::string, double> variables;
 };
 
