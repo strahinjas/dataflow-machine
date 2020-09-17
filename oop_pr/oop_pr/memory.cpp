@@ -17,6 +17,8 @@ double Memory::get(const std::string& variableName) const
 
 bool Memory::set(const std::string& variableName, double value)
 {
+	--writeCount;
+
 	if (variables.insert({ variableName, value }).second == false)
 	{
 		throw SSAViolationException(variableName);

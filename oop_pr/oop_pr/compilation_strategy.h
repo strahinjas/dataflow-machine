@@ -10,8 +10,6 @@ class CompilationStrategy
 public:
 	virtual void execute() const = 0;
 protected:
-	using Node = Expression::TokenPointer;
-
 	static unsigned int operationID;
 	static unsigned int temporaryCount;
 };
@@ -21,7 +19,7 @@ class SimpleCompilationStrategy : public CompilationStrategy
 public:
 	void execute() const override;
 private:
-	void traversePostorder(std::ofstream& file, Node root) const;
+	void traversePostorder(std::ofstream& file, Expression* root) const;
 };
 
 class AdvancedCompilationStrategy : public CompilationStrategy

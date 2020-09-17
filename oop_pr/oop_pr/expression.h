@@ -9,8 +9,6 @@
 class Expression
 {
 public:
-	using TokenPointer = std::shared_ptr<Expression>;
-
 	enum class Operation : char
 	{
 		ASSIGN = '=',
@@ -20,18 +18,22 @@ public:
 		NONE
 	};
 
-	Expression(Operation operation, TokenPointer left = nullptr, TokenPointer right = nullptr)
+	Expression(Operation operation, Expression* left = nullptr, Expression* right = nullptr)
 		: operation(operation), left(left), right(right) {}
 
-	virtual ~Expression() {}
+	virtual ~Expression()
+	{
+		if (left)  delete left;
+		if (right) delete right;
+	}
 private:
 	friend class SimpleCompilationStrategy;
 	friend class AdvancedCompilationStrategy;
 
 	Operation operation;
 
-	TokenPointer left;
-	TokenPointer right;
+	Expression* left;
+	Expression* right;
 };
 
 std::ostream& operator<<(std::ostream& os, Expression::Operation operation);

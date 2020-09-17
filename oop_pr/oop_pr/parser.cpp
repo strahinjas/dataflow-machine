@@ -46,7 +46,7 @@ void Parser::buildExpressionTree(const std::vector<std::string>& tokens)
 	const std::regex constant(R"(^-?(0|([1-9][0-9]*))(\.[0-9]+)?$)");
 
 	std::stack<std::size_t> stack;
-	std::stack<Expression::TokenPointer> nodes;
+	std::stack<Expression*> nodes;
 
 	auto leftToRight = [](const std::string& s) { return s != "=" && s != "^"; };
 
@@ -58,11 +58,11 @@ void Parser::buildExpressionTree(const std::vector<std::string>& tokens)
 		{
 			if (std::regex_match(token, variable))
 			{
-				nodes.push(std::make_shared<Variable>(token[0]));
+				nodes.push(new Variable(token[0]));
 			}
 			else if (std::regex_match(token, constant))
 			{
-				nodes.push(std::make_shared<Constant>(std::stod(token)));
+				nodes.push(new Constant(std::stod(token)));
 			}
 			else
 			{
@@ -73,12 +73,12 @@ void Parser::buildExpressionTree(const std::vector<std::string>& tokens)
 		{
 			while (!stack.empty() && (index < stack.top() || (index == stack.top() && leftToRight(token))))
 			{
-				Expression::TokenPointer right = nodes.top(); nodes.pop();
-				Expression::TokenPointer left  = nodes.top(); nodes.pop();
+				Expression* right = nodes.top(); nodes.pop();
+				Expression* left  = nodes.top(); nodes.pop();
 
 				Expression::Operation operation(static_cast<Expression::Operation>(operations[stack.top()]));
 
-				nodes.push(std::make_shared<Expression>(operation, left, right));
+				nodes.push(new Expression(operation, left, right));
 
 				stack.pop();
 			}
@@ -89,12 +89,12 @@ void Parser::buildExpressionTree(const std::vector<std::string>& tokens)
 
 	while (!stack.empty())
 	{
-		Expression::TokenPointer right = nodes.top(); nodes.pop();
-		Expression::TokenPointer left  = nodes.top(); nodes.pop();
+		Expression* right = nodes.top(); nodes.pop();
+		Expression* left  = nodes.top(); nodes.pop();
 
 		Expression::Operation operation(static_cast<Expression::Operation>(operations[stack.top()]));
 
-		nodes.push(std::make_shared<Expression>(operation, left, right));
+		nodes.push(new Expression(operation, left, right));
 
 		stack.pop();
 	}

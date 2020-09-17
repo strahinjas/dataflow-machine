@@ -12,6 +12,11 @@
 #include <fstream>
 #include <regex>
 
+Machine::~Machine()
+{
+	for (auto& operation : completed) delete operation;
+}
+
 void Machine::execute(const std::string& fileName)
 {
 	readIMF(fileName);
@@ -21,23 +26,15 @@ void Machine::execute(const std::string& fileName)
 
 	while (!waiting.empty() || !executing.empty())
 	{
-		for (const auto& operation : waiting)
-		{
-			if (operation->isReady())
-			{
-				operation->setStartTime(Scheduler::Instance()->getCurTime());
-
-				Event::create(operation.get(), operation->getDelay());
-
-				executing.insert(operation);
-				waiting.erase(operation);
-			}
-		}
+		transferReady();
 
 		Scheduler::Instance()->processNow();
+
+		transferCompleted();
 	}
 
 	Memory::getInstance().log(Program::getInstance().mem());
+	Logger::getInstance().close();
 }
 
 void Machine::readIMF(const std::string& fileName)
@@ -62,22 +59,22 @@ void Machine::readIMF(const std::string& fileName)
 void Machine::buildFlowGraph(const std::vector<std::string>& tokens)
 {
 	unsigned int ID = std::stoi(tokens[0]);
-	TokenPointer result = std::make_shared<Token>(tokens[2], ID);
-	OperationPointer operation;
+	Token* result = new Token(tokens[2], ID);
+	Operation* operation;
 
 	switch (tokens[1][0])
 	{
 	case '=':
-		operation = OperationPointer(new Assignment(ID));
+		operation = new Assignment(ID);
 		break;
 	case '+':
-		operation = OperationPointer(new Addition(ID));
+		operation = new Addition(ID);
 		break;
 	case '*':
-		operation = OperationPointer(new Multiplication(ID));
+		operation = new Multiplication(ID);
 		break;
-	case '^':
-		operation = OperationPointer(new Exponentiation(ID));
+	default:
+		operation = new Exponentiation(ID);
 		break;
 	}
 
@@ -87,17 +84,17 @@ void Machine::buildFlowGraph(const std::vector<std::string>& tokens)
 		operation->addOperand(makeToken(tokens[4]));
 
 	operation->setResult(result);
-	waiting.insert(std::move(operation));
+	waiting.insert(operation);
 }
 
-TokenPointer Machine::makeToken(const std::string& token) const
+Token* Machine::makeToken(const std::string& token) const
 {
-	TokenPointer pointer;
+	Token* pointer;
 	const std::regex constant(R"(^-?(0|([1-9][0-9]*))(\.[0-9]+)?$)");
 
 	if (std::regex_match(token, constant))
 	{
-		pointer = std::make_shared<Token>(std::stod(token));
+		pointer = new Token(std::stod(token));
 	}
 	else
 	{
@@ -105,4 +102,42 @@ TokenPointer Machine::makeToken(const std::string& token) const
 	}
 
 	return pointer;
+}
+
+void Machine::transferReady()
+{
+	auto it = waiting.begin();
+
+	while (it != waiting.end())
+	{
+		Operation* operation = *it;
+
+		if (operation->isReady())
+		{
+			operation->setStartTime(Scheduler::Instance()->getCurTime());
+
+			Event::create(operation, operation->getDelay());
+
+			executing.insert(operation);
+			it = waiting.erase(it);
+		}
+		else ++it;
+	}
+}
+
+void Machine::transferCompleted()
+{
+	auto it = executing.begin();
+
+	while (it != executing.end())
+	{
+		Operation* operation = *it;
+
+		if (operation->isDone())
+		{
+			completed.insert(operation);
+			it = executing.erase(it);
+		}
+		else ++it;
+	}
 }

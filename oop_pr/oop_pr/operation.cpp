@@ -7,10 +7,21 @@
 #include <iomanip>
 #include <sstream>
 
+Operation::~Operation()
+{
+	delete result;
+
+	for (auto& operand : operands)
+	{
+		if (operand->getOperationID() == 0) delete operand;
+	}
+}
+
 void Operation::notify(unsigned int)
 {
 	execute();
-	
+	done = true;
+
 	constexpr short WIDTH = 6;
 
 	std::stringstream ss;

@@ -10,9 +10,9 @@
 unsigned int CompilationStrategy::operationID = 0;
 unsigned int CompilationStrategy::temporaryCount = 0;
 
-void SimpleCompilationStrategy::traversePostorder(std::ofstream& file, Node root) const
+void SimpleCompilationStrategy::traversePostorder(std::ofstream& file, Expression* root) const
 {
-	std::stack<Node> stack;
+	std::stack<Expression*> stack;
 
 	std::stack<std::string> left;
 	std::string right;
@@ -39,11 +39,11 @@ void SimpleCompilationStrategy::traversePostorder(std::ofstream& file, Node root
 		}
 		else
 		{
-			if (Variable* variable = dynamic_cast<Variable*>(root.get()))
+			if (Variable* variable = dynamic_cast<Variable*>(root))
 			{
 				right = std::string(1, variable->name);
 			}
-			else if (Constant* constant = dynamic_cast<Constant*>(root.get()))
+			else if (Constant* constant = dynamic_cast<Constant*>(root))
 			{
 				right = doubleToString(constant->value);
 			}

@@ -5,15 +5,19 @@
 #include "configuration.h"
 #include "parser.h"
 
-#include <memory>
 #include <string>
 
 class Compiler
 {
 public:
-	void setStrategy(std::unique_ptr<CompilationStrategy> strategy)
+	Compiler() : strategy(nullptr) {}
+
+	~Compiler() { delete strategy; }
+
+	void setStrategy(CompilationStrategy* strategy)
 	{
-		this->strategy = std::move(strategy);
+		if (this->strategy) delete this->strategy;
+		this->strategy = strategy;
 	}
 
 	void compile(const std::string& configuration, const std::string& program)
@@ -24,14 +28,14 @@ public:
 		const std::string simple = "simple";
 
 		if (Configuration::getInstance().getStrategy() == simple)
-			setStrategy(std::make_unique<SimpleCompilationStrategy>());
+			setStrategy(new SimpleCompilationStrategy());
 		else
-			setStrategy(std::make_unique<AdvancedCompilationStrategy>());
+			setStrategy(new AdvancedCompilationStrategy());
 
 		strategy->execute();
 	}
 private:
-	std::unique_ptr<CompilationStrategy> strategy;
+	CompilationStrategy* strategy;
 };
 
 #endif

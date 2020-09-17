@@ -149,6 +149,7 @@
     <ClCompile Include="oop_pr.cpp" />
     <ClCompile Include="operation.cpp" />
     <ClCompile Include="parser.cpp" />
+    <ClCompile Include="program.cpp" />
     <ClCompile Include="token.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -9,6 +9,8 @@
 class Program
 {
 public:
+	~Program();
+
 	static Program& getInstance()
 	{
 		static Program instance;
@@ -21,7 +23,7 @@ public:
 	std::string log() const { return name + ".log"; }
 	std::string mem() const { return name + ".mem"; }
 
-	void addExpression(Expression::TokenPointer expression)
+	void addExpression(Expression* expression)
 	{
 		expressions.push_back(expression);
 	}
@@ -35,7 +37,7 @@ private:
 	friend class AdvancedCompilationStrategy;
 
 	std::string name;
-	std::vector<Expression::TokenPointer> expressions;
+	std::vector<Expression*> expressions;
 };
 
 #endif

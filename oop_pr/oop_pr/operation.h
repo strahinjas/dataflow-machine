@@ -6,17 +6,18 @@
 
 #include "Interfaces.h"
 
-#include <memory>
 #include <vector>
 
 class Operation : public ITimedElement
 {
 public:
+	virtual ~Operation();
+
 	void notify(unsigned int) override;
 
 	virtual bool isReady() const;
 
-	bool addOperand(TokenPointer operand)
+	bool addOperand(Token* operand)
 	{
 		if (operands.size() == operandCount) return false;
 
@@ -24,10 +25,14 @@ public:
 		return true;
 	}
 
+	unsigned int getID() const { return ID; }
+
 	double getDelay() const { return delay; }
 	void setStartTime(double time) { startTime = time; }
 
-	void setResult(TokenPointer result)
+	bool isDone() const { return done; }
+
+	void setResult(Token* result)
 	{
 		this->result = result;
 	}
@@ -35,7 +40,7 @@ public:
 	virtual void execute() = 0;
 protected:
 	Operation(unsigned int ID, unsigned int operandCount, double delay)
-		: ID(ID), operandCount(operandCount), delay(delay), startTime(0.0) {}
+		: ID(ID), operandCount(operandCount), delay(delay), startTime(0.0), done(false), result(nullptr) {}
 
 	unsigned int ID;
 	unsigned int operandCount;
@@ -43,11 +48,20 @@ protected:
 	double delay;
 	double startTime;
 
-	TokenPointer result;
-	std::vector<TokenPointer> operands;
+	bool done;
+
+	Token* result;
+	std::vector<Token*> operands;
 };
 
-using OperationPointer = std::unique_ptr<Operation>;
+class OperationCompare
+{
+public:
+	bool operator()(const Operation* left, const Operation* right) const
+	{
+		return left->getID() < right->getID();
+	}
+};
 
 class ArithmeticOperation : public Operation
 {

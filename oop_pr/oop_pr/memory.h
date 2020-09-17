@@ -14,12 +14,18 @@ public:
 
 	static Memory& getInstance()
 	{
-		static Memory instance(Configuration::getInstance().getParameter(Configuration::Parameter::Nw));
+		int Nw = static_cast<int>(Configuration::getInstance().getParameter(Configuration::Parameter::Nw));
+		static Memory instance(Nw);
 		return instance;
 	}
 
 	double get(const std::string& variableName) const;
 	bool   set(const std::string& variableName, double value);
+
+	bool contains(const std::string& name) const
+	{
+		return variables.count(name) > 0;
+	}
 
 	bool isReady() const { return writeCount < Nw; }
 	bool scheduleWrite()
