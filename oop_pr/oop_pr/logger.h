@@ -20,7 +20,7 @@ public:
 		return file.is_open();
 	}
 
-	void write(const std::string& text)
+	void log(const std::string& text)
 	{
 		file << text << '\n';
 	}

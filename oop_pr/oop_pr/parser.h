@@ -22,16 +22,14 @@ class Parser
 public:
 	static void readConfiguration(const std::string& fileName);
 	static void readProgram(const std::string& fileName);
-	static void readIMF(const std::string& fileName);
+
+	static std::vector<std::string> split(const std::string& line, const char* delimiter, bool include);
 private:
 	static void trim(std::string& s);
 	static void removeSpaces(std::string& s);
 	static void removeExtraSpaces(std::string& s);
 
-	static std::vector<std::string> split(const std::string& line, const char* delimiter, bool include);
-
 	static void buildExpressionTree(const std::vector<std::string>& tokens);
-	static void buildFlowGraph(const std::vector<std::string>& tokens);
 
 	static void readParameter(const std::string& line);
 

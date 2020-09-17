@@ -1,9 +1,33 @@
 #include "operation.h"
 
-#include <cmath>
+#include "logger.h"
+#include "memory.h"
 
-void Operation::notify(unsigned int ID)
+#include <cmath>
+#include <iomanip>
+#include <sstream>
+
+void Operation::notify(unsigned int)
 {
+	execute();
+	
+	constexpr short WIDTH = 6;
+
+	std::stringstream ss;
+	ss << std::left << std::setw(WIDTH) << "[" + std::to_string(ID) + "]";
+	ss << '(' << startTime << '-' << startTime + delay << ")ns";
+
+	Logger::getInstance().log(ss.str());
+}
+
+bool Operation::isReady() const
+{
+	for (const auto& operand : operands)
+	{
+		if (!operand->isReady()) return false;
+	}
+
+	return true;
 }
 
 void Addition::execute()
@@ -24,7 +48,13 @@ void Exponentiation::execute()
 	this->result->setValue(result);
 }
 
+bool Assignment::isReady() const
+{
+	return Operation::isReady() && Memory::getInstance().scheduleWrite();
+}
+
 void Assignment::execute()
 {
-	
+	result->setValue(operands[0]->getValue());
+	Memory::getInstance().set(result->getName(), result->getValue());
 }

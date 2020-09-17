@@ -10,9 +10,15 @@
 class Token
 {
 public:
+	explicit Token(double value) : value(value), operationID(0), isReady(true) {}
 	Token(const std::string& name, unsigned int operationID = 0);
 
-	bool isReady() const { return ready; }
+	static std::shared_ptr<Token> getToken(const std::string& name)
+	{
+		return tokens.at(name);
+	}
+
+	bool isReady() const { return isReady; }
 
 	const std::string& getName() const { return name; }
 
@@ -27,7 +33,7 @@ public:
 private:
 	static std::unordered_map<std::string, std::shared_ptr<Token>> tokens;
 
-	bool ready;
+	bool isReady;
 
 	std::string name;
 	double value;

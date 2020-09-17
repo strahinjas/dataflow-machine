@@ -1,6 +1,8 @@
 #ifndef _MEMORY_H_
 #define _MEMORY_H_
 
+#include "configuration.h"
+
 #include <map>
 #include <string>
 
@@ -10,18 +12,27 @@ public:
 	Memory(const Memory&) = delete;
 	Memory& operator=(const Memory&) = delete;
 
-	static Memory& getInstance(int Nw)
+	static Memory& getInstance()
 	{
-		static Memory instance(Nw);
+		static Memory instance(Configuration::getInstance().getParameter(Configuration::Parameter::Nw));
 		return instance;
 	}
 
 	double get(const std::string& variableName) const;
 	bool   set(const std::string& variableName, double value);
 
-	bool ready() const { return writeCount < Nw; }
+	bool isReady() const { return writeCount < Nw; }
+	bool scheduleWrite()
+	{
+		if (isReady())
+		{
+			++writeCount;
+			return true;
+		}
+		return false;
+	}
 
-	void write(const std::string& fileName) const;
+	void log(const std::string& fileName) const;
 private:
 	explicit Memory(int Nw) : Nw(Nw), writeCount(0) {}
 

@@ -25,7 +25,7 @@ bool Memory::set(const std::string& variableName, double value)
 	return true;
 }
 
-void Memory::write(const std::string& fileName) const
+void Memory::log(const std::string& fileName) const
 {
 	std::ofstream file(fileName, std::ofstream::trunc);
 

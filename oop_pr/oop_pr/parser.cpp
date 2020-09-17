@@ -4,6 +4,7 @@
 #include "compiler.h"
 #include "exceptions.h"
 #include "program.h"
+#include "token.h"
 
 #include <fstream>
 #include <memory>
@@ -102,11 +103,6 @@ void Parser::buildExpressionTree(const std::vector<std::string>& tokens)
 	nodes.pop();
 }
 
-void Parser::buildFlowGraph(const std::vector<std::string>& tokens)
-{
-
-}
-
 void Parser::readParameter(const std::string& line)
 {
 	const std::string simpleStrategy = "simple";
@@ -179,25 +175,6 @@ void Parser::readProgram(const std::string& fileName)
 	{
 		removeSpaces(line);
 		buildExpressionTree(split(line, "=+*^", true));
-	}
-
-	file.close();
-}
-
-void Parser::readIMF(const std::string& fileName)
-{
-	std::ifstream file(fileName);
-
-	if (!file.is_open())
-	{
-		throw GenericException("Failed to open intermediate form file '" + fileName + "'.");
-	}
-
-	std::string line;
-
-	while (std::getline(file, line))
-	{
-		buildFlowGraph(split(line, "[ ]", false));
 	}
 
 	file.close();

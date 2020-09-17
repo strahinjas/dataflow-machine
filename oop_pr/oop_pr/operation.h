@@ -12,17 +12,36 @@
 class Operation : public ITimedElement
 {
 public:
-	void notify(unsigned int ID) override;
+	void notify(unsigned int) override;
+
+	virtual bool isReady() const;
+
+	bool addOperand(TokenPointer operand)
+	{
+		if (operands.size() == operandCount) return false;
+
+		operands.push_back(operand);
+		return true;
+	}
+
+	double getDelay() const { return delay; }
+	void setStartTime(double time) { startTime = time; }
+
+	void setResult(TokenPointer result)
+	{
+		this->result = result;
+	}
 
 	virtual void execute() = 0;
 protected:
 	Operation(unsigned int ID, unsigned int operandCount, double delay)
-		: ID(ID), operandCount(operandCount), delay(delay) {}
+		: ID(ID), operandCount(operandCount), delay(delay), startTime(0.0) {}
 
 	unsigned int ID;
 	unsigned int operandCount;
 
 	double delay;
+	double startTime;
 
 	TokenPointer result;
 	std::vector<TokenPointer> operands;
@@ -70,7 +89,9 @@ class Assignment : public Operation
 {
 public:
 	Assignment(unsigned int ID)
-		: Operation(ID, 2, Configuration::getInstance().getParameter(Configuration::Parameter::Tw)) {}
+		: Operation(ID, 1, Configuration::getInstance().getParameter(Configuration::Parameter::Tw)) {}
+
+	bool isReady() const override;
 
 	void execute() override;
 };
