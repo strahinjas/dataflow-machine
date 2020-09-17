@@ -26,8 +26,10 @@ public:
 		if (left)  delete left;
 		if (right) delete right;
 	}
+
+	Operation getOperation() const { return operation; }
 private:
-	friend class SimpleCompilationStrategy;
+	friend class CompilationStrategy;
 	friend class AdvancedCompilationStrategy;
 
 	Operation operation;
@@ -43,7 +45,7 @@ class Variable : public Expression
 public:
 	Variable(char name) : Expression(Operation::NONE), name(name) {}
 private:
-	friend class SimpleCompilationStrategy;
+	friend class CompilationStrategy;
 	friend class AdvancedCompilationStrategy;
 
 	char name;
@@ -54,7 +56,7 @@ class Constant : public Expression
 public:
 	Constant(double value) : Expression(Operation::NONE), value(value) {}
 private:
-	friend class SimpleCompilationStrategy;
+	friend class CompilationStrategy;
 	friend class AdvancedCompilationStrategy;
 
 	double value;

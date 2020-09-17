@@ -4,13 +4,15 @@
 #include "parser.h"
 #include "program.h"
 
+#include <cassert>
 #include <stack>
 #include <string>
+#include <utility>
 
 unsigned int CompilationStrategy::operationID = 0;
 unsigned int CompilationStrategy::temporaryCount = 0;
 
-void SimpleCompilationStrategy::traversePostorder(std::ofstream& file, Expression* root) const
+void CompilationStrategy::traversePostorder(std::ofstream& file, Expression* root) const
 {
 	std::stack<Expression*> stack;
 
@@ -49,6 +51,7 @@ void SimpleCompilationStrategy::traversePostorder(std::ofstream& file, Expressio
 			}
 			else
 			{
+				assert(root != nullptr);
 				file << '[' << ++operationID << "] " << root->operation << ' ';
 
 				if (root->operation == Expression::Operation::ASSIGN)
@@ -90,7 +93,54 @@ void SimpleCompilationStrategy::execute() const
 	file.close();
 }
 
+void AdvancedCompilationStrategy::optimize(Expression* root) const
+{
+	auto commutative = [](Expression::Operation operation)
+	{
+		return operation == Expression::Operation::ADD || operation == Expression::Operation::MULTIPLY;
+	};
+
+	Expression::Operation operation = root->operation;
+
+	auto check = [&operation](Expression* node)
+	{
+		return node && node->getOperation() == operation;
+	};
+
+	if (commutative(operation))
+	{
+		if (check(root->left))
+		{
+			if (check(root->left->left)) std::swap(root->right, root->left->left);
+			else if (check(root->left->right)) std::swap(root->right, root->left->right);
+		}
+
+		if (check(root->right))
+		{
+			if (check(root->right->left)) std::swap(root->left, root->right->left);
+			else if (check(root->right->right)) std::swap(root->left, root->right->right);
+		}
+	}
+
+	if (root->left)  optimize(root->left);
+	if (root->right) optimize(root->right);
+}
+
 void AdvancedCompilationStrategy::execute() const
 {
-	// TODO: Advanced Compilation Strategy
+	Program& program = Program::getInstance();
+	std::ofstream file(program.imf(), std::ofstream::trunc);
+
+	if (!file.is_open())
+	{
+		throw GenericException("Failed to create intermediate form file '" + program.imf() + "'.");
+	}
+
+	for (const auto& expression : program.expressions)
+	{
+		optimize(expression);
+		traversePostorder(file, expression);
+	}
+
+	file.close();
 }

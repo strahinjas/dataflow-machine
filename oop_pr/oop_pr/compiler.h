@@ -10,7 +10,11 @@
 class Compiler
 {
 public:
-	Compiler() : strategy(nullptr) {}
+	static Compiler& getInstance()
+	{
+		static Compiler instance;
+		return instance;
+	}
 
 	~Compiler() { delete strategy; }
 
@@ -25,16 +29,14 @@ public:
 		Parser::readConfiguration(configuration);
 		Parser::readProgram(program);
 
-		const std::string simple = "simple";
-
-		if (Configuration::getInstance().getStrategy() == simple)
-			setStrategy(new SimpleCompilationStrategy());
-		else
-			setStrategy(new AdvancedCompilationStrategy());
-
 		strategy->execute();
 	}
 private:
+	Compiler() = default;
+
+	Compiler(const Compiler&) = delete;
+	Compiler& operator=(const Compiler&) = delete;
+
 	CompilationStrategy* strategy;
 };
 

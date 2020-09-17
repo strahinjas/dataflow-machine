@@ -115,7 +115,10 @@ void Parser::readParameter(const std::string& line)
 		{
 			if (entry.first == Configuration::Parameter::C)
 			{
-				Configuration::getInstance().setStrategy(match[1]);
+				if (match[1] == simpleStrategy)
+					Compiler::getInstance().setStrategy(new SimpleCompilationStrategy());
+				else
+					Compiler::getInstance().setStrategy(new AdvancedCompilationStrategy());
 			}
 			else
 			{

@@ -1,6 +1,6 @@
 #include "compiler.h"
-#include "program.h"
 #include "machine.h"
+#include "program.h"
 
 #include <exception>
 #include <iostream>
@@ -24,11 +24,8 @@ int main(int argc, const char* argv[])
 
 	try
 	{
-		Compiler compiler;
-		compiler.compile(configuration, program);
-
-		Machine machine;
-		machine.execute(Program::getInstance().imf());
+		Compiler::getInstance().compile(configuration, program);
+		Machine::getInstance().execute(Program::getInstance().imf());
 	}
 	catch (const std::exception& e)
 	{

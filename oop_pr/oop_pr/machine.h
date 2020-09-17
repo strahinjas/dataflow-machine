@@ -10,17 +10,28 @@
 class Machine
 {
 public:
+	static Machine& getInstance()
+	{
+		static Machine instance;
+		return instance;
+	}
+
 	~Machine();
 
 	void execute(const std::string& fileName);
 private:
+	Machine() = default;
+
+	Machine(const Machine&) = delete;
+	Machine& operator=(const Machine&) = delete;
+
 	void readIMF(const std::string& fileName);
 	void buildFlowGraph(const std::vector<std::string>& tokens);
 
 	Token* makeToken(const std::string& token) const;
 
-	void transferReady();
-	void transferCompleted();
+	void moveReady();
+	void moveCompleted();
 
 	std::set<Operation*, OperationCompare> waiting;
 	std::set<Operation*, OperationCompare> executing;

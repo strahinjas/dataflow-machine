@@ -28,20 +28,9 @@ public:
 		parameters[static_cast<std::size_t>(index)] = value;
 	}
 
-	const std::string& getStrategy() const
-	{
-		return compilationStrategy;
-	}
-
-	void setStrategy(const std::string& strategy)
-	{
-		compilationStrategy = strategy;
-	}
-
 	void resetParameters()
 	{
 		parameters = std::vector<double>(parameterCount, 0.0);
-		compilationStrategy.clear();
 	}
 private:
 	Configuration() = default;
@@ -50,7 +39,6 @@ private:
 	Configuration& operator=(const Configuration&) = delete;
 
 	std::vector<double> parameters;
-	std::string compilationStrategy;
 };
 
 #endif

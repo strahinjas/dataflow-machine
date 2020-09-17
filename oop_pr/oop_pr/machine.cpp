@@ -26,11 +26,11 @@ void Machine::execute(const std::string& fileName)
 
 	while (!waiting.empty() || !executing.empty())
 	{
-		transferReady();
+		moveReady();
 
 		Scheduler::Instance()->processNow();
 
-		transferCompleted();
+		moveCompleted();
 	}
 
 	Memory::getInstance().log(Program::getInstance().mem());
@@ -104,7 +104,7 @@ Token* Machine::makeToken(const std::string& token) const
 	return pointer;
 }
 
-void Machine::transferReady()
+void Machine::moveReady()
 {
 	auto it = waiting.begin();
 
@@ -125,7 +125,7 @@ void Machine::transferReady()
 	}
 }
 
-void Machine::transferCompleted()
+void Machine::moveCompleted()
 {
 	auto it = executing.begin();
 
