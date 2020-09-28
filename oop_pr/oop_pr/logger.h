@@ -7,6 +7,9 @@
 class Logger
 {
 public:
+	Logger(const Logger&) = delete;
+	Logger& operator=(const Logger&) = delete;
+
 	static Logger& getInstance()
 	{
 		static Logger instance;
@@ -31,9 +34,6 @@ public:
 	}
 private:
 	Logger() = default;
-
-	Logger(const Logger&) = delete;
-	Logger& operator=(const Logger&) = delete;
 
 	std::ofstream file;
 };

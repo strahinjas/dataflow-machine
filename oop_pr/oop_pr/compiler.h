@@ -10,6 +10,9 @@
 class Compiler
 {
 public:
+	Compiler(const Compiler&) = delete;
+	Compiler& operator=(const Compiler&) = delete;
+
 	static Compiler& getInstance()
 	{
 		static Compiler instance;
@@ -33,9 +36,6 @@ public:
 	}
 private:
 	Compiler() = default;
-
-	Compiler(const Compiler&) = delete;
-	Compiler& operator=(const Compiler&) = delete;
 
 	CompilationStrategy* strategy;
 };

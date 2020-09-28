@@ -10,6 +10,9 @@
 class Machine
 {
 public:
+	Machine(const Machine&) = delete;
+	Machine& operator=(const Machine&) = delete;
+
 	static Machine& getInstance()
 	{
 		static Machine instance;
@@ -21,9 +24,6 @@ public:
 	void execute(const std::string& fileName);
 private:
 	Machine() = default;
-
-	Machine(const Machine&) = delete;
-	Machine& operator=(const Machine&) = delete;
 
 	void readIMF(const std::string& fileName);
 	void buildFlowGraph(const std::vector<std::string>& tokens);

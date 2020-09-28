@@ -11,6 +11,9 @@ class Program
 public:
 	~Program();
 
+	Program(const Program&) = delete;
+	Program& operator=(const Program&) = delete;
+
 	static Program& getInstance()
 	{
 		static Program instance;
@@ -29,9 +32,6 @@ public:
 	}
 private:
 	Program() = default;
-
-	Program(const Program&) = delete;
-	Program& operator=(const Program&) = delete;
 
 	friend class SimpleCompilationStrategy;
 	friend class AdvancedCompilationStrategy;
