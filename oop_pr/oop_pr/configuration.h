@@ -12,6 +12,9 @@ class Configuration
 public:
 	enum class Parameter { Ta, Tm, Te, Tw, Nw, C };
 
+	Configuration(const Configuration&) = delete;
+	Configuration& operator=(const Configuration&) = delete;
+
 	static Configuration& getInstance()
 	{
 		static Configuration instance;
@@ -34,9 +37,6 @@ public:
 	}
 private:
 	Configuration() = default;
-
-	Configuration(const Configuration&) = delete;
-	Configuration& operator=(const Configuration&) = delete;
 
 	std::vector<double> parameters;
 };
